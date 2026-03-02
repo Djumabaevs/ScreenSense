@@ -1,0 +1,157 @@
+===========================================================
+  SCREENSENSE - APP STORE CONNECT METADATA
+===========================================================
+
+APP NAME:
+ScreenSense - AI Screen Coach
+
+SUBTITLE:
+Understand Your Screen Time
+
+CATEGORY:
+Primary: Health & Fitness
+Secondary: Productivity
+
+PRICE:
+Free (with In-App Purchase: Pro $4.99 one-time)
+
+AGE RATING:
+4+
+
+-----------------------------------------------------------
+PROMOTIONAL TEXT (170 chars max):
+-----------------------------------------------------------
+Your screen time has a story. ScreenSense uses on-device AI to reveal the quality of your usage - not just the quantity. 100% private, no subscriptions, beautifully designed.
+
+-----------------------------------------------------------
+DESCRIPTION (4000 chars max):
+-----------------------------------------------------------
+ScreenSense doesn't just count your screen time - it understands it.
+
+While other apps tell you "you spent 4 hours on Instagram," ScreenSense tells you WHY and HOW it affected your mood.
+
+AI-POWERED ANALYSIS
+Our on-device AI classifies your usage into Productive, Neutral, and Mindless categories - so you know the QUALITY of your screen time, not just the quantity.
+
+100% PRIVATE
+Everything runs on YOUR iPhone. No servers, no accounts, no data collection. We literally can't see your data. No Firebase, no analytics SDKs, nothing leaves your device.
+
+PERSONALIZED INSIGHTS
+Get daily insights about your patterns: doom-scrolling detection, late-night alerts, mood correlations, and more. Not generic advice - insights tailored to YOUR habits.
+
+SMART GOALS
+Set goals that actually make sense - not just "use phone less" but "make 50% of screen time productive." Track streaks, earn achievements, and see real progress.
+
+MOOD TRACKING
+Track how you feel throughout the day and discover how your screen habits affect your mood. See the correlation between what you consume and how you feel.
+
+BEAUTIFUL DESIGN
+Stunning Liquid Glass UI with smooth animations, haptic feedback, and attention to every detail. Heatmaps, timelines, weekly digests - all beautifully crafted.
+
+FREE FEATURES:
+- Daily Health Score & Dashboard
+- Basic Timeline (today)
+- 1 Active Goal with streak tracking
+- 1 Daily AI Insight
+- Mood Tracking
+- Small Home Screen Widget
+- 7-day history
+
+PRO FEATURES ($4.99 one-time, yours forever):
+- Unlimited Goals & AI Insights
+- Weekly Digest reports
+- Deep Pattern Analysis
+- All Widgets (Medium, Large, Lock Screen)
+- Apple Watch App
+- Customizable Nudges
+- Alternative App Icons
+- Data Export (JSON/CSV)
+- Mood + Usage Correlations
+- 365-Day History
+- Achievements System
+
+No subscriptions. Pay once, own it forever.
+
+Start understanding your screen time today. No judgment, just awareness.
+
+-----------------------------------------------------------
+KEYWORDS (100 chars max):
+-----------------------------------------------------------
+screen time,digital wellness,phone addiction,focus,productivity,mindful,doom scroll,detox,health,AI
+
+-----------------------------------------------------------
+WHAT'S NEW (RELEASE NOTES) - Version 1.0.0:
+-----------------------------------------------------------
+Welcome to ScreenSense! This is our very first release.
+
+- AI-powered screen time quality analysis
+- Daily Health Score with beautiful ring visualization
+- Timeline view with day, week, and month views
+- Smart insights powered by on-device AI
+- Mood tracking with usage correlation
+- Customizable goals with streak tracking
+- Beautiful Liquid Glass design
+- Home Screen and Lock Screen widgets
+- Gentle nudges and bedtime reminders
+- One-time Pro upgrade - no subscriptions ever
+
+We built ScreenSense because we believe understanding HOW you use your phone matters more than just counting minutes. All processing happens on your device - your data never leaves your iPhone.
+
+-----------------------------------------------------------
+SUPPORT URL:
+-----------------------------------------------------------
+https://screensense.app/support
+
+-----------------------------------------------------------
+MARKETING URL:
+-----------------------------------------------------------
+https://screensense.app
+
+-----------------------------------------------------------
+PRIVACY POLICY URL:
+-----------------------------------------------------------
+https://screensense.app/privacy
+
+-----------------------------------------------------------
+IN-APP PURCHASES:
+-----------------------------------------------------------
+Product ID: com.screensense.pro.lifetime
+Type: Non-Consumable
+Display Name: ScreenSense Pro
+Description: Unlock unlimited goals, insights, widgets, Apple Watch app, data export, and 365-day history. One-time purchase, yours forever.
+Price: $4.99
+
+-----------------------------------------------------------
+APP PRIVACY (App Store Privacy Labels):
+-----------------------------------------------------------
+
+Data NOT Collected:
+ScreenSense does not collect any data. All processing happens
+on-device. There are no servers, no analytics, no tracking.
+
+Select: "Data Not Collected" for ALL categories.
+
+Specifically:
+- No contact info collected
+- No health & fitness data sent anywhere
+- No usage data collected by us
+- No diagnostics collected
+- No identifiers collected
+- No browsing data collected
+- No location data collected
+
+Note: Screen Time data accessed via Apple's DeviceActivity
+framework stays entirely on the user's device and is never
+transmitted anywhere.
+
+-----------------------------------------------------------
+SCREENSHOT DESCRIPTIONS:
+-----------------------------------------------------------
+Screenshot 1: "Know the QUALITY of your screen time"
+Screenshot 2: "AI detects doom-scrolling & bad habits"
+Screenshot 3: "See your day, hour by hour"
+Screenshot 4: "Set goals that actually work"
+Screenshot 5: "Track your mood & find patterns"
+Screenshot 6: "100% private. Everything on your iPhone."
+Screenshot 7: "Beautiful widgets for your Home Screen"
+Screenshot 8: "Weekly Digest - your week at a glance"
