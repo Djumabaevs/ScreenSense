@@ -11,29 +11,73 @@ struct CreateGoalSheet: View {
     @State private var selectedApp: String = ""
     @State private var showAppPicker = false
     @State private var appSearchText = ""
-    
+    @State private var customAppName = ""
+
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                if selectedType == nil {
-                    goalTypePicker
-                } else {
-                    goalConfigurator
+            ScrollView {
+                VStack(spacing: 20) {
+                    if selectedType == nil {
+                        goalTypePicker
+                    } else {
+                        goalConfigurator
+                    }
                 }
+                .padding()
             }
-            .padding()
             .navigationTitle("New Goal")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    if selectedType != nil {
+                        Button {
+                            withAnimation { selectedType = nil }
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.left")
+                                    .font(.system(size: 12, weight: .semibold))
+                                Text("Back")
+                            }
+                        }
+                    } else {
+                        Button("Cancel") { dismiss() }
+                    }
                 }
             }
         }
         .sheet(isPresented: $showAppPicker) {
-            NavigationStack {
-                List {
-                    ForEach(filteredAvailableApps, id: \.self) { appName in
+            appPickerSheet
+        }
+    }
+
+    // MARK: - App Picker Sheet
+
+    private var appPickerSheet: some View {
+        NavigationStack {
+            List {
+                if !allAvailableApps.isEmpty {
+                    Section("Your Apps") {
+                        ForEach(filteredAvailableApps, id: \.self) { appName in
+                            Button {
+                                selectedApp = appName
+                                showAppPicker = false
+                            } label: {
+                                HStack {
+                                    Text(appName)
+                                    Spacer()
+                                    if selectedApp == appName {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(.blue)
+                                    }
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+
+                Section("Common Apps") {
+                    ForEach(filteredCommonApps, id: \.self) { appName in
                         Button {
                             selectedApp = appName
                             showAppPicker = false
@@ -50,64 +94,110 @@ struct CreateGoalSheet: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .searchable(text: $appSearchText, prompt: "Search apps")
-                .navigationTitle("Select App")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("Close") {
-                            showAppPicker = false
+
+                Section("Custom") {
+                    HStack {
+                        TextField("Type app name...", text: $customAppName)
+                        if !customAppName.trimmingCharacters(in: .whitespaces).isEmpty {
+                            Button("Add") {
+                                selectedApp = customAppName.trimmingCharacters(in: .whitespaces)
+                                customAppName = ""
+                                showAppPicker = false
+                            }
+                            .foregroundStyle(.blue)
                         }
+                    }
+                }
+            }
+            .searchable(text: $appSearchText, prompt: "Search apps")
+            .navigationTitle("Select App")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        showAppPicker = false
                     }
                 }
             }
         }
     }
-    
+
+    // MARK: - Goal Type Picker
+
     private var goalTypePicker: some View {
         VStack(spacing: 12) {
             Text("What would you like to do?")
                 .font(.headline)
-            
+
             ForEach(GoalType.allCases, id: \.self) { type in
-                Button {
-                    withAnimation { selectedType = type }
+                TappableGlassCard(action: {
+                    withAnimation(.glassSpring) { selectedType = type }
                     targetValue = defaultTargetValue(for: type)
                     if type == .reduceApp {
-                        selectedApp = availableAppNames.first ?? selectedApp
+                        selectedApp = allAvailableApps.first ?? ""
                     }
-                } label: {
-                    GlassCard {
-                        HStack {
-                            Image(systemName: type.icon)
-                                .foregroundStyle(.blue)
-                                .frame(width: 32)
+                }) {
+                    HStack {
+                        Image(systemName: type.icon)
+                            .foregroundStyle(.blue)
+                            .frame(width: 32)
+                        VStack(alignment: .leading, spacing: 2) {
                             Text(type.displayName)
-                                .font(.subheadline)
-                            Spacer()
-                            Image(systemName: "chevron.right")
+                                .font(.subheadline.weight(.medium))
+                            Text(goalTypeDescription(for: type))
                                 .font(.caption)
-                                .foregroundStyle(.tertiary)
+                                .foregroundStyle(.secondary)
                         }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
                     }
                 }
-                .buttonStyle(.plain)
             }
         }
     }
-    
+
+    private func goalTypeDescription(for type: GoalType) -> String {
+        switch type {
+        case .reduceTotal: return "Limit your total daily screen time"
+        case .reduceApp: return "Set a time limit for a specific app"
+        case .increaseProductive: return "Spend more time on productive apps"
+        case .reducePickups: return "Pick up your phone less often"
+        case .noPhoneAfter: return "Set a bedtime for your phone"
+        case .mindfulBreaks: return "Take regular breaks from screens"
+        case .moodCheck: return "Check in with your mood daily"
+        }
+    }
+
+    // MARK: - Goal Configurator
+
     private var goalConfigurator: some View {
         VStack(spacing: 24) {
-            Text(selectedType?.displayName ?? "")
-                .font(.title3.bold())
+            // Header
+            GlassCard(style: .elevated) {
+                HStack {
+                    Image(systemName: selectedType?.icon ?? "target")
+                        .font(.title2)
+                        .foregroundStyle(.blue)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(selectedType?.displayName ?? "")
+                            .font(.title3.bold())
+                        Text(goalTypeDescription(for: selectedType ?? .reduceTotal))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+            }
 
             appTargetPicker
-            
+
             VStack(spacing: 8) {
-                Text("Target:")
-                    .font(.subheadline)
+                Text("Set Your Target")
+                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(.secondary)
-                
+
                 Picker("Value", selection: $targetValue) {
                     switch selectedType {
                     case .reduceTotal:
@@ -137,9 +227,7 @@ struct CreateGoalSheet: View {
                 .pickerStyle(.wheel)
                 .frame(height: 120)
             }
-            
-            Spacer()
-            
+
             GlassButton("Create Goal", style: .primary) {
                 guard let type = selectedType else { return }
                 let unit: GoalUnit
@@ -150,7 +238,7 @@ struct CreateGoalSheet: View {
                 case .noPhoneAfter: unit = .time
                 default: unit = .count
                 }
-                
+
                 let goal = UserGoal(
                     type: type,
                     targetValue: targetValue,
@@ -162,12 +250,6 @@ struct CreateGoalSheet: View {
             }
             .disabled(!canCreateGoal)
         }
-        .onChange(of: selectedType) { _, newType in
-            guard newType == .reduceApp else { return }
-            if selectedApp.isEmpty {
-                selectedApp = availableAppNames.first ?? ""
-            }
-        }
     }
 
     @ViewBuilder
@@ -175,33 +257,41 @@ struct CreateGoalSheet: View {
         if selectedType == .reduceApp {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Target App:")
-                    .font(.subheadline)
+                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(.secondary)
 
-                if availableAppNames.isEmpty {
-                    Text("No app data yet. Use apps for a few minutes and return to Home to sync.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Button {
-                        appSearchText = ""
-                        showAppPicker = true
-                    } label: {
-                        HStack {
-                            Text(selectedApp.isEmpty ? "Select App" : selectedApp)
-                                .foregroundStyle(selectedApp.isEmpty ? .secondary : .primary)
-                                .lineLimit(1)
-                            Spacer()
-                            Image(systemName: "magnifyingglass")
+                Button {
+                    appSearchText = ""
+                    customAppName = ""
+                    showAppPicker = true
+                } label: {
+                    HStack {
+                        if selectedApp.isEmpty {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundStyle(.blue)
+                            Text("Select an App")
                                 .foregroundStyle(.secondary)
+                        } else {
+                            Image(systemName: "app.fill")
+                                .foregroundStyle(.blue)
+                            Text(selectedApp)
+                                .foregroundStyle(.primary)
+                                .lineLimit(1)
                         }
-                        .padding(12)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
                     }
-                    .buttonStyle(.plain)
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(.white.opacity(0.1), lineWidth: 0.5)
+                    )
                 }
+                .buttonStyle(LiquidGlassButtonStyle())
             }
         }
     }
@@ -214,15 +304,23 @@ struct CreateGoalSheet: View {
         return true
     }
 
+    // MARK: - Available Apps
+
     private var filteredAvailableApps: [String] {
         let query = appSearchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty else {
-            return availableAppNames
-        }
-        return availableAppNames.filter { $0.localizedCaseInsensitiveContains(query) }
+        guard !query.isEmpty else { return allAvailableApps }
+        return allAvailableApps.filter { $0.localizedCaseInsensitiveContains(query) }
     }
 
-    private var availableAppNames: [String] {
+    private var filteredCommonApps: [String] {
+        let query = appSearchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let existing = Set(allAvailableApps)
+        let common = Self.commonAppNames.filter { !existing.contains($0) }
+        guard !query.isEmpty else { return common }
+        return common.filter { $0.localizedCaseInsensitiveContains(query) }
+    }
+
+    private var allAvailableApps: [String] {
         var totalsByName: [String: TimeInterval] = [:]
 
         // Source 1: Historical DailyReports from SwiftData
@@ -259,12 +357,18 @@ struct CreateGoalSheet: View {
             .map(\.key)
     }
 
-    /// Returns the best display name: prefer appName, fall back to cleaned identifier
+    /// Common app names as fallback when no usage data is available
+    static let commonAppNames: [String] = [
+        "Instagram", "TikTok", "YouTube", "Twitter", "Facebook",
+        "Snapchat", "Reddit", "WhatsApp", "Telegram", "Messenger",
+        "Safari", "Chrome", "Gmail", "Netflix", "Spotify",
+        "Pinterest", "LinkedIn", "Discord", "Twitch", "BeReal"
+    ]
+
     private func displayName(for appName: String, identifier: String) -> String {
         let name = appName.trimmingCharacters(in: .whitespacesAndNewlines)
         if !name.isEmpty { return name }
 
-        // Fall back to identifier: extract last component and clean up
         let id = identifier.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !id.isEmpty else { return "" }
 
@@ -293,18 +397,12 @@ struct CreateGoalSheet: View {
 
     private func defaultTargetValue(for type: GoalType) -> Double {
         switch type {
-        case .reduceTotal:
-            return 180
-        case .reduceApp:
-            return 30
-        case .increaseProductive:
-            return 50
-        case .reducePickups:
-            return 40
-        case .noPhoneAfter:
-            return 23
-        case .mindfulBreaks, .moodCheck:
-            return 1
+        case .reduceTotal: return 180
+        case .reduceApp: return 30
+        case .increaseProductive: return 50
+        case .reducePickups: return 40
+        case .noPhoneAfter: return 23
+        case .mindfulBreaks, .moodCheck: return 1
         }
     }
 }

@@ -1,0 +1,65 @@
+# Xcode build output
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Xcode workspace settings
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# macOS
+.DS_Store
+*.swp
+*~
+._*
+
+# Swift Package Manager
+.build/
+Packages/
+Package.pins
+Package.resolved
+*.xcodeproj/project.xcworkspace/
+!*.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+
+# CocoaPods (if ever used)
+Pods/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code Injection
+iOSInjectionProject/
+
+# Provisioning profiles
+*.mobileprovision
+*.provisionprofile
+
+# App Store Connect API key
+AuthKey_*.p8
+
+# Crashlytics
+com_crashlytics_export_strings.xml
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Archive
+*.xcarchive
+
+# Instruments
+*.trace
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+Secrets/
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace

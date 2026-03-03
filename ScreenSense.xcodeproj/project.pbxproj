@@ -32,6 +32,7 @@
 		41C47457FB60CD81042BF2CF /* Color+Glass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC111A1280C80B9B66614E5A /* Color+Glass.swift */; };
 		44744571A574E3375080ABC1 /* GoalTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 810DED1DF7BAA54FD3FC0973 /* GoalTracker.swift */; };
 		461F577A576A8F46AB3DC29C /* PermissionsSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AFE00209B58C462A132E8A /* PermissionsSetupView.swift */; };
+		3A1B7C9E2F8D4A6B1E5C3D7A /* AIAnalysisEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F2D8A1C6B9E3F5A0D7B2C /* AIAnalysisEngine.swift */; };
 		466F47A7E344E58DFDF3A7FA /* PatternEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC2D1AF5816BE19888E3EA0 /* PatternEngine.swift */; };
 		4D0E744C07176E92A0E83B0E /* ScoreRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D24AAF2EDEC403013D9544 /* ScoreRingView.swift */; };
 		4FB018B2A7577FA6AD3035BA /* ScreenSenseReport.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = A6FCD32EBEE541AFE9EFB675 /* ScreenSenseReport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -163,6 +164,7 @@
 		113955A01A9A2C8417255BE3 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		1942E1514CFCA69E57CB2A48 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		1A36C199386CC11058C60C6B /* InsightEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightEngine.swift; sourceTree = "<group>"; };
+		7E4F2D8A1C6B9E3F5A0D7B2C /* AIAnalysisEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAnalysisEngine.swift; sourceTree = "<group>"; };
 		1A894477D2308AC6BE46904B /* MoodAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodAnalyzer.swift; sourceTree = "<group>"; };
 		1E08341511F1A5FC1C3ADAD8 /* ScreenTimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeService.swift; sourceTree = "<group>"; };
 		211BDF011EBEF6C76F084967 /* GlassButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassButton.swift; sourceTree = "<group>"; };
@@ -351,6 +353,7 @@
 		54CE09CDEB46756C44255E5F /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				7E4F2D8A1C6B9E3F5A0D7B2C /* AIAnalysisEngine.swift */,
 				5818F396DF8E12F98D4BFB1F /* ClassificationEngine.swift */,
 				810DED1DF7BAA54FD3FC0973 /* GoalTracker.swift */,
 				1A36C199386CC11058C60C6B /* InsightEngine.swift */,
@@ -740,6 +743,7 @@
 				C4F17E25851BFBDA5FBECBFA /* Insight.swift in Sources */,
 				CA4413FBC99FB9C4E3815B9A /* InsightCardView.swift in Sources */,
 				AC5FBBB0B136ABA4C3B7D0FC /* InsightDetailView.swift in Sources */,
+				3A1B7C9E2F8D4A6B1E5C3D7A /* AIAnalysisEngine.swift in Sources */,
 				FE5028800A88C0EAF528996F /* InsightEngine.swift in Sources */,
 				FCEBD56A74172437007C8B2F /* InsightType.swift in Sources */,
 				8DBF90605C066B299B24C9F8 /* InsightsView.swift in Sources */,

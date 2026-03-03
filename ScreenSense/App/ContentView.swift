@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab = 0
-    
+
     var body: some View {
         TabView(selection: $selectedTab) {
             DashboardView()
@@ -10,25 +10,25 @@ struct ContentView: View {
                     Label("Home", systemImage: "house.fill")
                 }
                 .tag(0)
-            
+
             TimelineView()
                 .tabItem {
                     Label("Timeline", systemImage: "chart.bar.fill")
                 }
                 .tag(1)
-            
+
             InsightsView()
                 .tabItem {
                     Label("Insights", systemImage: "lightbulb.fill")
                 }
                 .tag(2)
-            
+
             GoalsView()
                 .tabItem {
                     Label("Goals", systemImage: "target")
                 }
                 .tag(3)
-            
+
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape.fill")
@@ -36,5 +36,9 @@ struct ContentView: View {
                 .tag(4)
         }
         .tint(.blue)
+        .onChange(of: selectedTab) { _, _ in
+            let impact = UIImpactFeedbackGenerator(style: .light)
+            impact.impactOccurred()
+        }
     }
 }

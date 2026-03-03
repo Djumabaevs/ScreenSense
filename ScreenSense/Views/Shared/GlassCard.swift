@@ -67,6 +67,49 @@ struct GlassCard<Content: View>: View {
     }
 }
 
+// MARK: - Liquid Glass Button Style
+
+/// A button style that applies a liquid glass press effect:
+/// scale down + brightness shift + highlight overlay on press, with spring animation.
+struct LiquidGlassButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+            .brightness(configuration.isPressed ? -0.05 : 0)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(.white.opacity(configuration.isPressed ? 0.08 : 0))
+            )
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)
+    }
+}
+
+/// A tappable GlassCard that applies liquid glass press feedback with haptics.
+struct TappableGlassCard<Content: View>: View {
+    let style: GlassCardStyle
+    let action: () -> Void
+    @ViewBuilder let content: Content
+
+    init(style: GlassCardStyle = .regular, action: @escaping () -> Void, @ViewBuilder content: () -> Content) {
+        self.style = style
+        self.action = action
+        self.content = content()
+    }
+
+    var body: some View {
+        Button {
+            let impact = UIImpactFeedbackGenerator(style: .light)
+            impact.impactOccurred()
+            action()
+        } label: {
+            GlassCard(style: style) {
+                content
+            }
+        }
+        .buttonStyle(LiquidGlassButtonStyle())
+    }
+}
+
 #Preview {
     ZStack {
         Color.black.ignoresSafeArea()
@@ -75,8 +118,8 @@ struct GlassCard<Content: View>: View {
                 Text("Regular Glass")
                     .foregroundStyle(.white)
             }
-            GlassCard(style: .elevated) {
-                Text("Elevated Glass")
+            TappableGlassCard(style: .elevated, action: {}) {
+                Text("Tappable Elevated Glass")
                     .foregroundStyle(.white)
             }
             GlassCard(style: .subtle) {
