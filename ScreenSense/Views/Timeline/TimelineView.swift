@@ -24,23 +24,26 @@ struct TimelineView: View {
                 dateNavigation
                 
                 ScrollView {
-                    switch selectedPeriod {
-                    case .day:
-                        DayTimelineView(
-                            report: reportForDate(selectedDate),
-                            date: selectedDate
-                        )
-                    case .week:
-                        WeekHeatmapView(
-                            reports: reportsForWeek(selectedDate),
-                            weekStart: selectedDate.startOfWeek
-                        )
-                    case .month:
-                        MonthCalendarView(
-                            reports: reportsForMonth(selectedDate),
-                            month: selectedDate
-                        )
+                    VStack(spacing: 0) {
+                        switch selectedPeriod {
+                        case .day:
+                            DayTimelineView(
+                                report: reportForDate(selectedDate),
+                                date: selectedDate
+                            )
+                        case .week:
+                            WeekHeatmapView(
+                                reports: reportsForWeek(selectedDate),
+                                weekStart: selectedDate.startOfWeek
+                            )
+                        case .month:
+                            MonthCalendarView(
+                                reports: reportsForMonth(selectedDate),
+                                month: selectedDate
+                            )
+                        }
                     }
+                    .padding(.bottom, 32)
                 }
             }
             .navigationTitle("Timeline")
@@ -59,15 +62,23 @@ struct TimelineView: View {
                 }
             } label: {
                 Image(systemName: "chevron.left")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.primary)
+                    .frame(width: 32, height: 32)
+                    .background(.ultraThinMaterial, in: Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(.white.opacity(0.12), lineWidth: 0.5)
+                    )
             }
-            
+
             Spacer()
-            
+
             Text(dateLabel)
                 .font(.headline)
-            
+
             Spacer()
-            
+
             Button {
                 withAnimation {
                     switch selectedPeriod {
@@ -78,6 +89,14 @@ struct TimelineView: View {
                 }
             } label: {
                 Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Calendar.current.isDateInToday(selectedDate) ? .tertiary : .primary)
+                    .frame(width: 32, height: 32)
+                    .background(.ultraThinMaterial, in: Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(.white.opacity(0.12), lineWidth: 0.5)
+                    )
             }
             .disabled(Calendar.current.isDateInToday(selectedDate))
         }

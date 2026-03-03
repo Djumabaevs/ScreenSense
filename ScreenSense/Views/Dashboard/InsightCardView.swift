@@ -3,6 +3,7 @@ import SwiftUI
 struct InsightCardView: View {
     let insight: Insight
     @State private var isDismissed = false
+    @State private var showDetails = false
     
     var body: some View {
         if !isDismissed {
@@ -41,10 +42,15 @@ struct InsightCardView: View {
                         }
                         .frame(maxWidth: .infinity)
                         
-                        GlassButton("More", style: .ghost) {}
+                        GlassButton("More", style: .ghost) {
+                            showDetails = true
+                        }
                             .frame(maxWidth: .infinity)
                     }
                 }
+            }
+            .sheet(isPresented: $showDetails) {
+                InsightDetailView(insight: insight)
             }
         }
     }

@@ -3,6 +3,7 @@ import SwiftUI
 struct AppDetailSheet: View {
     let entry: AppUsageEntry
     @Environment(\.dismiss) private var dismiss
+    @State private var actionFeedbackMessage: String?
     
     var body: some View {
         NavigationStack {
@@ -22,6 +23,19 @@ struct AppDetailSheet: View {
                     Button("Done") { dismiss() }
                 }
             }
+        }
+        .alert(
+            "Action Saved",
+            isPresented: Binding(
+                get: { actionFeedbackMessage != nil },
+                set: { if !$0 { actionFeedbackMessage = nil } }
+            )
+        ) {
+            Button("OK") {
+                actionFeedbackMessage = nil
+            }
+        } message: {
+            Text(actionFeedbackMessage ?? "")
         }
     }
     
@@ -102,6 +116,7 @@ struct AppDetailSheet: View {
     
     private func actionRow(icon: String, title: String) -> some View {
         Button {
+            actionFeedbackMessage = "\(title) has been noted for \(entry.appName)."
         } label: {
             HStack {
                 Image(systemName: icon)
@@ -129,6 +144,6 @@ struct AppDetailSheet: View {
     }
 }
 
-extension AppUsageEntry: @retroactive Identifiable {
+extension AppUsageEntry: Identifiable {
     public var id: String { appIdentifier + date.description }
 }

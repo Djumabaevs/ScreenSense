@@ -6,6 +6,7 @@ struct PermissionsSetupView: View {
     @State private var screenTimeGranted = false
     @State private var screenTimeError: String?
     @State private var notificationsGranted = false
+    @State private var showNotificationsSettingsAlert = false
     @State private var bedtimeHour = 23
     @State private var wakeupHour = 7
     
@@ -35,11 +36,7 @@ struct PermissionsSetupView: View {
                             } else {
                                 GlassButton("Allow", style: .secondary) {
                                     Task {
-                                        await screenTimeService.requestAuthorization()
-                                        screenTimeGranted = screenTimeService.isAuthorized
-                                        if let error = screenTimeService.authorizationError {
-                                            screenTimeError = error.localizedDescription
-                                        }
+                                        await requestScreenTimeAccess()
                                     }
                                 }
                                 .frame(width: 100)
@@ -71,7 +68,7 @@ struct PermissionsSetupView: View {
                         } else {
                             GlassButton("Enable", style: .secondary) {
                                 Task {
-                                    notificationsGranted = await NotificationService.shared.requestPermission()
+                                    await requestNotificationsAccess()
                                 }
                             }
                             .frame(width: 100)
@@ -115,12 +112,65 @@ struct PermissionsSetupView: View {
             Spacer()
             
             GlassButton("Start Sensing!", style: .primary) {
-                UserDefaults.standard.set(bedtimeHour, forKey: UserDefaultsKeys.bedtimeHour)
-                UserDefaults.standard.set(wakeupHour, forKey: UserDefaultsKeys.wakeupHour)
-                onComplete()
+                Task {
+                    await completeSetup()
+                }
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 60)
         }
+        .task {
+            screenTimeService.checkAuthorizationStatus()
+            screenTimeGranted = screenTimeService.isAuthorized
+            notificationsGranted = await NotificationService.shared.hasPermission()
+        }
+        .alert("Notifications Disabled", isPresented: $showNotificationsSettingsAlert) {
+            Button("Not Now", role: .cancel) {}
+            Button("Open Settings") {
+                NotificationService.shared.openSystemSettings()
+            }
+        } message: {
+            Text("Enable notifications in iPhone Settings to receive nudges and alerts.")
+        }
+    }
+
+    @MainActor
+    private func requestScreenTimeAccess() async {
+        await screenTimeService.requestAuthorization()
+        screenTimeGranted = screenTimeService.isAuthorized
+        screenTimeError = screenTimeService.authorizationError?.localizedDescription
+    }
+
+    @MainActor
+    private func requestNotificationsAccess() async {
+        notificationsGranted = await NotificationService.shared.requestPermissionIfNeeded()
+        if !notificationsGranted {
+            showNotificationsSettingsAlert = true
+        }
+    }
+
+    @MainActor
+    private func completeSetup() async {
+        UserDefaults.standard.set(bedtimeHour, forKey: UserDefaultsKeys.bedtimeHour)
+        UserDefaults.standard.set(wakeupHour, forKey: UserDefaultsKeys.wakeupHour)
+        NotificationService.shared.registerCategories()
+
+        if !screenTimeGranted {
+            await requestScreenTimeAccess()
+        }
+
+        guard screenTimeGranted else {
+            if screenTimeError == nil {
+                screenTimeError = "Screen Time access is required to collect usage data."
+            }
+            return
+        }
+
+        if !notificationsGranted {
+            await requestNotificationsAccess()
+        }
+
+        screenTimeService.startMonitoringIfAuthorized()
+        onComplete()
     }
 }

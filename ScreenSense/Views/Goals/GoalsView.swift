@@ -13,6 +13,7 @@ struct GoalsView: View {
                     achievementsSection
                 }
                 .padding()
+                .padding(.bottom, 32)
             }
             .navigationTitle("Goals")
             .toolbar {

@@ -7,6 +7,14 @@ struct TopAppsView: View {
     
     var body: some View {
         VStack(spacing: 8) {
+            if apps.isEmpty {
+                Text("No usage data yet. Use a few apps, return to Home, and wait a moment for sync.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 4)
+            }
+
             ForEach(Array(apps.sorted(by: { $0.duration > $1.duration }).prefix(limit).enumerated()), id: \.element.appIdentifier) { index, entry in
                 Button {
                     onAppTap?(entry)

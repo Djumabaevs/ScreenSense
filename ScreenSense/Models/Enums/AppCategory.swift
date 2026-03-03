@@ -47,4 +47,27 @@ enum AppCategory: String, Codable, CaseIterable {
         case .other: return "square.grid.2x2.fill"
         }
     }
+
+    /// Maps a raw Screen Time category string (e.g. "Social Networking") to an AppCategory.
+    static func from(screenTimeCategory raw: String, appName: String = "") -> AppCategory {
+        let normalized = raw.lowercased()
+
+        if normalized.contains("social") { return .social }
+        if normalized.contains("message") || normalized.contains("communication") { return .messaging }
+        if normalized.contains("entertain") || normalized.contains("video") || normalized.contains("game") { return .entertainment }
+        if normalized.contains("product") || normalized.contains("business") || normalized.contains("developer") { return .productivity }
+        if normalized.contains("education") { return .education }
+        if normalized.contains("health") || normalized.contains("fitness") { return .health }
+        if normalized.contains("news") { return .news }
+        if normalized.contains("shopping") { return .shopping }
+        if normalized.contains("finance") { return .finance }
+        if normalized.contains("photo") || normalized.contains("graphics") || normalized.contains("creative") { return .creativity }
+        if normalized.contains("utility") || normalized.contains("reference") || normalized.contains("navigation") { return .utility }
+
+        let appLower = appName.lowercased()
+        if appLower.contains("instagram") || appLower.contains("tiktok") || appLower.contains("reddit") { return .social }
+        if appLower.contains("notion") || appLower.contains("calendar") || appLower.contains("xcode") { return .productivity }
+
+        return .other
+    }
 }

@@ -1,5 +1,6 @@
 import Foundation
 import UserNotifications
+import UIKit
 
 final class NotificationService {
     static let shared = NotificationService()
@@ -8,6 +9,40 @@ final class NotificationService {
         do {
             return try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
         } catch {
+            return false
+        }
+    }
+
+    func authorizationStatus() async -> UNAuthorizationStatus {
+        await withCheckedContinuation { continuation in
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                continuation.resume(returning: settings.authorizationStatus)
+            }
+        }
+    }
+
+    func hasPermission() async -> Bool {
+        let status = await authorizationStatus()
+        switch status {
+        case .authorized, .provisional, .ephemeral:
+            return true
+        case .denied, .notDetermined:
+            return false
+        @unknown default:
+            return false
+        }
+    }
+
+    func requestPermissionIfNeeded() async -> Bool {
+        let status = await authorizationStatus()
+        switch status {
+        case .authorized, .provisional, .ephemeral:
+            return true
+        case .notDetermined:
+            return await requestPermission()
+        case .denied:
+            return false
+        @unknown default:
             return false
         }
     }
@@ -31,5 +66,11 @@ final class NotificationService {
     
     func removeAllPending() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+    }
+
+    @MainActor
+    func openSystemSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
     }
 }

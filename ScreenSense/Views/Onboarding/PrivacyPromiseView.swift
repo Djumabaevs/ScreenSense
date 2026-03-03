@@ -15,10 +15,7 @@ struct PrivacyPromiseView: View {
         VStack(spacing: 24) {
             Spacer()
             
-            Image(systemName: "lock.shield.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(.green.gradient)
-                .symbolEffect(.bounce, options: .nonRepeating)
+            lockImage
             
             Text("Your Data Stays Yours")
                 .font(.title2.bold())
@@ -45,6 +42,19 @@ struct PrivacyPromiseView: View {
             GlassButton("I Love That. Next", style: .primary, action: onContinue)
                 .padding(.horizontal, 24)
                 .padding(.bottom, 60)
+        }
+    }
+
+    @ViewBuilder
+    private var lockImage: some View {
+        let baseImage = Image(systemName: "lock.shield.fill")
+            .font(.system(size: 64))
+            .foregroundStyle(.green.gradient)
+
+        if #available(iOS 18.0, *) {
+            baseImage.symbolEffect(.bounce, options: .nonRepeating)
+        } else {
+            baseImage
         }
     }
 }

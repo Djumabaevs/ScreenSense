@@ -11,9 +11,9 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "1.0.0"
+    MARKETING_VERSION: "1.0.1"
     CURRENT_PROJECT_VERSION: "1"
-    DEVELOPMENT_TEAM: ""
+    DEVELOPMENT_TEAM: "R56999TGTG"
     CODE_SIGN_IDENTITY: "Apple Development"
     CODE_SIGN_STYLE: Automatic
 
@@ -31,12 +31,13 @@ targets:
           - "**/.DS_Store"
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.screensense.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.dzhumabaevs.screensense.app
         INFOPLIST_GENERATION_MODE: GeneratedFile
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: true
         INFOPLIST_KEY_UILaunchScreen_Generation: true
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         INFOPLIST_KEY_NSFamilyControlsUsageDescription: "ScreenSense needs access to your screen time data to provide insights about your usage patterns."
         INFOPLIST_KEY_CFBundleDisplayName: "ScreenSense"
         GENERATE_INFOPLIST_FILE: true
@@ -46,6 +47,20 @@ targets:
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks"
     entitlements:
       path: ScreenSense/ScreenSense.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.screensense.shared
+        com.apple.developer.family-controls: true
+    dependencies:
+      - target: ScreenSenseWidget
+        embed: true
+        link: false
+      - target: ScreenSenseMonitor
+        embed: true
+        link: false
+      - target: ScreenSenseReport
+        embed: true
+        link: false
 
   ScreenSenseWidget:
     type: app-extension
@@ -58,22 +73,81 @@ targets:
       - path: Shared
         excludes:
           - "**/.DS_Store"
-      - path: ScreenSense/Extensions
-        excludes:
-          - "**/.DS_Store"
+      - path: ScreenSense/Extensions/Color+Glass.swift
+      - path: ScreenSense/Extensions/TimeInterval+Format.swift
       - path: ScreenSense/Models/Enums/ContentQuality.swift
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.screensense.app.widget
-        INFOPLIST_GENERATION_MODE: GeneratedFile
-        GENERATE_INFOPLIST_FILE: true
-        INFOPLIST_KEY_CFBundleDisplayName: "ScreenSense Widget"
-        INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier: "com.apple.widgetkit-extension"
+        PRODUCT_BUNDLE_IDENTIFIER: com.dzhumabaevs.screensense.app.widget
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: ScreenSenseWidget/Info.plist
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         SWIFT_EMIT_LOC_STRINGS: true
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"
         SKIP_INSTALL: true
-    dependencies:
-      - target: ScreenSense
-        embed: false
-        link: false
+
+  ScreenSenseMonitor:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: ScreenSenseMonitor
+        excludes:
+          - "**/.DS_Store"
+      - path: Shared
+        excludes:
+          - "**/.DS_Store"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dzhumabaevs.screensense.app.monitor
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: ScreenSenseMonitor/Info.plist
+        SWIFT_EMIT_LOC_STRINGS: true
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"
+        SKIP_INSTALL: true
+    entitlements:
+      path: ScreenSenseMonitor/ScreenSenseMonitor.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.screensense.shared
+        com.apple.developer.family-controls: true
+
+  ScreenSenseReport:
+    type: extensionkit-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: ScreenSenseReport
+        excludes:
+          - "**/.DS_Store"
+      - path: Shared
+        excludes:
+          - "**/.DS_Store"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dzhumabaevs.screensense.app.report
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: ScreenSenseReport/Info.plist
+        SWIFT_EMIT_LOC_STRINGS: true
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"
+        SKIP_INSTALL: true
+    entitlements:
+      path: ScreenSenseReport/ScreenSenseReport.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.screensense.shared
+        com.apple.developer.family-controls: true
+
+schemes:
+  ScreenSense:
+    build:
+      targets:
+        ScreenSense: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+    profile:
+      config: Release
+    analyze:
+      config: Debug
