@@ -28,7 +28,8 @@ struct SharedDailyData: Codable {
     }
 }
 
-struct SharedAppUsage: Codable, Hashable {
+struct SharedAppUsage: Codable, Hashable, Identifiable {
+    var id: String { appIdentifier }
     var appIdentifier: String
     var appName: String
     var category: String

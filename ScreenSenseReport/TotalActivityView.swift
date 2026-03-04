@@ -5,6 +5,8 @@ import SwiftUI
 
 struct TotalActivityView: View {
     let summary: SharedDailyData
+    @State private var showAllApps = false
+    @State private var selectedApp: SharedAppUsage?
 
     // MARK: - Classification
 
@@ -399,18 +401,35 @@ struct TotalActivityView: View {
 
                 Spacer()
 
-                Text("\(summary.appUsages.count) used")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(.tertiary)
+                if summary.appUsages.count > 5 {
+                    Button {
+                        withAnimation(.spring(response: 0.3)) {
+                            showAllApps.toggle()
+                        }
+                    } label: {
+                        Text(showAllApps ? "Show Less" : "See All (\(summary.appUsages.count))")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(.blue)
+                    }
+                } else {
+                    Text("\(summary.appUsages.count) used")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.tertiary)
+                }
             }
             .padding(.horizontal, 2)
 
             VStack(spacing: 0) {
-                let topApps = Array(summary.appUsages.prefix(5))
-                ForEach(Array(topApps.enumerated()), id: \.offset) { index, app in
-                    appRow(app: app, rank: index + 1)
+                let appsToShow = showAllApps ? summary.appUsages : Array(summary.appUsages.prefix(5))
+                ForEach(Array(appsToShow.enumerated()), id: \.offset) { index, app in
+                    Button {
+                        selectedApp = app
+                    } label: {
+                        appRow(app: app, rank: index + 1)
+                    }
+                    .buttonStyle(.plain)
 
-                    if index < topApps.count - 1 {
+                    if index < appsToShow.count - 1 {
                         Divider()
                             .padding(.leading, 44)
                             .opacity(0.25)
@@ -420,6 +439,86 @@ struct TotalActivityView: View {
         }
         .padding(14)
         .background(glassBackground(cornerRadius: 18))
+        .sheet(item: $selectedApp) { app in
+            appDetailSheet(app: app)
+        }
+    }
+
+    // MARK: - App Detail Sheet
+
+    private func appDetailSheet(app: SharedAppUsage) -> some View {
+        let category = classify(app)
+        let appTotal = summary.appUsages.reduce(0) { $0 + $1.duration }
+        let fraction = appTotal > 0 ? app.duration / appTotal : 0
+
+        return VStack(spacing: 20) {
+            // Header
+            RoundedRectangle(cornerRadius: 2.5)
+                .fill(Color.gray.opacity(0.4))
+                .frame(width: 36, height: 5)
+                .padding(.top, 8)
+
+            VStack(spacing: 8) {
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [category.color.opacity(0.7), category.color],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 50, height: 50)
+                    .overlay {
+                        Text(String(app.appName.prefix(1)).uppercased())
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                    }
+
+                Text(app.appName.isEmpty ? app.appIdentifier : app.appName)
+                    .font(.title3.bold())
+
+                Text(app.category.isEmpty ? "Other" : app.category)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Stats
+            HStack(spacing: 20) {
+                VStack(spacing: 4) {
+                    Text(formattedDuration(app.duration))
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                    Text("Time Used")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                VStack(spacing: 4) {
+                    Text("\(Int(fraction * 100))%")
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .foregroundStyle(category.color)
+                    Text("of Total")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                VStack(spacing: 4) {
+                    Text(category.label)
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundStyle(category.color)
+                    Text("Category")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(glassBackground(cornerRadius: 16))
+
+            Spacer()
+        }
+        .padding()
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
     }
 
     private func appRow(app: SharedAppUsage, rank: Int) -> some View {
