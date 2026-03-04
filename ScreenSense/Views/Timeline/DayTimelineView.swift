@@ -40,37 +40,8 @@ struct DayTimelineView: View {
                     }
                 }
             } else {
-                // Use live DeviceActivityReport for today
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack(spacing: 8) {
-                        Image(systemName: isToday ? "waveform" : "chart.bar.fill")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(isToday ? .green : .secondary)
-
-                        Text(isToday ? "Live Activity" : "Activity")
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
-                            .foregroundStyle(.secondary)
-                            .textCase(.uppercase)
-                            .tracking(0.8)
-
-                        Spacer()
-
-                        if isToday {
-                            Circle()
-                                .fill(.green)
-                                .frame(width: 6, height: 6)
-                        }
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(.white.opacity(0.12), lineWidth: 0.5)
-                    )
-
-                    DeviceActivityReport(.totalActivity, filter: filterForDate)
-                }
+                // Live extension view — handles its own scrolling via TotalActivityView
+                DeviceActivityReport(.totalActivity, filter: filterForDate)
             }
         }
         .padding()

@@ -23,27 +23,29 @@ struct TimelineView: View {
                 
                 dateNavigation
                 
-                ScrollView {
-                    VStack(spacing: 0) {
-                        switch selectedPeriod {
-                        case .day:
-                            DayTimelineView(
-                                report: reportForDate(selectedDate),
-                                date: selectedDate
-                            )
-                        case .week:
-                            WeekHeatmapView(
-                                reports: reportsForWeek(selectedDate),
-                                weekStart: selectedDate.startOfWeek
-                            )
-                        case .month:
-                            MonthCalendarView(
-                                reports: reportsForMonth(selectedDate),
-                                month: selectedDate
-                            )
-                        }
+                switch selectedPeriod {
+                case .day:
+                    // Extension view handles its own scrolling
+                    DayTimelineView(
+                        report: reportForDate(selectedDate),
+                        date: selectedDate
+                    )
+                case .week:
+                    ScrollView {
+                        WeekHeatmapView(
+                            reports: reportsForWeek(selectedDate),
+                            weekStart: selectedDate.startOfWeek
+                        )
+                        .padding(.bottom, 32)
                     }
-                    .padding(.bottom, 32)
+                case .month:
+                    ScrollView {
+                        MonthCalendarView(
+                            reports: reportsForMonth(selectedDate),
+                            month: selectedDate
+                        )
+                        .padding(.bottom, 32)
+                    }
                 }
             }
             .navigationTitle("Timeline")
