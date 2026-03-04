@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import DeviceActivity
 
 struct InsightsView: View {
     @Query(sort: \Insight.date, order: .reverse) private var insights: [Insight]
@@ -12,6 +13,19 @@ struct InsightsView: View {
 
     private var todayReport: DailyReport? {
         reports.first { Calendar.current.isDateInToday($0.date) }
+    }
+
+    private var insightsFilterForToday: DeviceActivityFilter {
+        let now = Date()
+        let interval = DateInterval(
+            start: Calendar.current.startOfDay(for: now),
+            end: now
+        )
+        return DeviceActivityFilter(
+            segment: .hourly(during: interval),
+            users: .all,
+            devices: .all
+        )
     }
 
     private var todayInsights: [Insight] {
@@ -99,19 +113,24 @@ struct InsightsView: View {
                 ForEach(Array(generateSmartInsights(from: dr).enumerated()), id: \.offset) { _, item in
                     smartInsightCard(item)
                 }
+            } else if ScreenTimeService.shared.isAuthorized {
+                // Show live insights from extension when no local data
+                DeviceActivityReport(.insights, filter: insightsFilterForToday)
+                    .frame(minHeight: 300)
+                    .allowsHitTesting(false)
             } else {
                 GlassCard(style: .subtle) {
                     HStack(spacing: 12) {
-                        Image(systemName: "clock.fill")
+                        Image(systemName: "lock.fill")
                             .font(.title3)
                             .foregroundStyle(.secondary)
                             .frame(width: 36, height: 36)
                             .background(.ultraThinMaterial, in: Circle())
 
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Insights Coming Soon")
+                            Text("Screen Time Access Needed")
                                 .font(.subheadline.bold())
-                            Text("Use your device for a few minutes to generate personalized insights.")
+                            Text("Allow Screen Time access to see personalized insights.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -1739,38 +1758,70 @@ struct BrainAnalysisSheet: View {
 
     // MARK: - No Data
 
+    @State private var brainReportRefreshID = UUID()
+
     private var noDataSection: some View {
-        GlassCard {
-            VStack(spacing: 16) {
-                Image(systemName: "chart.bar.doc.horizontal")
-                    .font(.system(size: 40))
-                    .foregroundStyle(.secondary)
+        VStack(spacing: 16) {
+            GlassCard {
+                VStack(spacing: 12) {
+                    Image(systemName: "info.circle")
+                        .font(.title3)
+                        .foregroundStyle(.blue)
+                    Text("Data is syncing...")
+                        .font(.subheadline.bold())
+                    Text("Your screen time data is shown below from the system report. Detailed AI analysis will be available once data syncs to the app.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
 
-                Text("No Data Yet")
-                    .font(.title3.bold())
-
-                Text("Use your device for a few minutes, then return to Home and tap Refresh to sync your screen time data.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-
-                Button {
-                    Task {
-                        ScreenTimeDataSyncService.shared.syncLatestDailyData(into: modelContext)
-                        displayReport = DisplayReport.loadFromSharedContainers()
-                        if let dr = effectiveReport {
-                            aiEngine.analysisState = .completed(generateLocalAnalysis(from: dr))
+                    Button {
+                        Task {
+                            ScreenTimeDataSyncService.shared.syncLatestDailyData(into: modelContext)
+                            displayReport = DisplayReport.loadFromSharedContainers()
+                            if let dr = effectiveReport {
+                                aiEngine.analysisState = .completed(generateLocalAnalysis(from: dr))
+                            }
+                            brainReportRefreshID = UUID()
                         }
+                    } label: {
+                        Label("Try Syncing", systemImage: "arrow.clockwise")
+                            .font(.caption.weight(.medium))
                     }
-                } label: {
-                    Label("Try Syncing Now", systemImage: "arrow.clockwise")
-                        .font(.subheadline.weight(.medium))
+                    .buttonStyle(.borderedProminent)
                 }
-                .buttonStyle(.borderedProminent)
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 20)
+
+            // Show live data from extension as fallback
+            if ScreenTimeService.shared.isAuthorized {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Live Report", systemImage: "waveform")
+                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+                        .tracking(0.8)
+                        .padding(.horizontal, 4)
+
+                    DeviceActivityReport(.insights, filter: brainFilterForToday)
+                        .id(brainReportRefreshID)
+                        .frame(minHeight: 400)
+                        .allowsHitTesting(false)
+                }
+            }
         }
+    }
+
+    private var brainFilterForToday: DeviceActivityFilter {
+        let now = Date()
+        let interval = DateInterval(
+            start: Calendar.current.startOfDay(for: now),
+            end: now
+        )
+        return DeviceActivityFilter(
+            segment: .hourly(during: interval),
+            users: .all,
+            devices: .all
+        )
     }
 
     // MARK: - Helpers

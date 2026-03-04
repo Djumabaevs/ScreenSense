@@ -70,7 +70,7 @@ struct DayTimelineView: View {
                     )
 
                     DeviceActivityReport(.totalActivity, filter: filterForDate)
-                        .frame(minHeight: 450)
+                        .frame(minHeight: 700)
                         .allowsHitTesting(false)
                 }
             }
