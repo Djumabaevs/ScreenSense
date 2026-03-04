@@ -1806,7 +1806,7 @@ struct BrainAnalysisSheet: View {
 
                     DeviceActivityReport(.insights, filter: brainFilterForToday)
                         .id(brainReportRefreshID)
-                        .frame(height: 500)
+                        .frame(height: 800)
                 }
             }
         }
