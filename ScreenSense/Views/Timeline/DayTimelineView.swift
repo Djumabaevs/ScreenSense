@@ -69,11 +69,10 @@ struct DayTimelineView: View {
                             .stroke(.white.opacity(0.12), lineWidth: 0.5)
                     )
 
-                    DeviceActivityReport(.totalActivity, filter: filterForDate)
-                        .frame(minHeight: 700)
-                        .overlay {
-                            Color.white.opacity(0.001)
-                        }
+                    PassthroughView(content:
+                        DeviceActivityReport(.totalActivity, filter: filterForDate)
+                    )
+                    .frame(minHeight: 700)
                 }
             }
         }

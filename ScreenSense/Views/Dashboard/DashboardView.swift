@@ -216,12 +216,11 @@ struct DashboardView: View {
                 // The DeviceActivityReport (renders TotalActivityView from the extension)
                 // This is essential: it triggers the extension to run and sync data.
                 // The overlay captures scroll gestures so the parent ScrollView works.
-                DeviceActivityReport(.totalActivity, filter: filterForToday)
-                    .id(reportRefreshID)
-                    .frame(minHeight: 700)
-                    .overlay {
-                        Color.white.opacity(0.001)
-                    }
+                PassthroughView(content:
+                    DeviceActivityReport(.totalActivity, filter: filterForToday)
+                        .id(reportRefreshID)
+                )
+                .frame(minHeight: 700)
             }
             .springAppear()
         }

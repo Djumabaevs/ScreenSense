@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 enum GlassCardStyle {
     case regular
@@ -128,5 +129,47 @@ struct TappableGlassCard<Content: View>: View {
             }
         }
         .padding()
+    }
+}
+
+// MARK: - Passthrough View (for DeviceActivityReport in ScrollView)
+
+/// Wraps content in a UIKit view that passes ALL touches through.
+/// Fixes ExtensionKit remote views capturing scroll gestures.
+struct PassthroughView<Content: View>: UIViewRepresentable {
+    let content: Content
+
+    func makeUIView(context: Context) -> PassthroughContainerView {
+        let container = PassthroughContainerView()
+        let hosting = UIHostingController(rootView: content)
+        hosting.view.backgroundColor = .clear
+        hosting.view.isUserInteractionEnabled = false
+        hosting.view.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(hosting.view)
+        NSLayoutConstraint.activate([
+            hosting.view.topAnchor.constraint(equalTo: container.topAnchor),
+            hosting.view.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            hosting.view.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            hosting.view.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+        ])
+        context.coordinator.hostingController = hosting
+        return container
+    }
+
+    func updateUIView(_ uiView: PassthroughContainerView, context: Context) {
+        context.coordinator.hostingController?.rootView = content
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    class Coordinator {
+        var hostingController: UIHostingController<Content>?
+    }
+}
+
+/// Returns nil from hitTest — all touches pass through to parent ScrollView.
+class PassthroughContainerView: UIView {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        return nil
     }
 }

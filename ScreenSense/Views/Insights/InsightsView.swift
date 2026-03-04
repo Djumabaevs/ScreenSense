@@ -115,9 +115,10 @@ struct InsightsView: View {
                 }
             } else if ScreenTimeService.shared.isAuthorized {
                 // Show live insights from extension when no local data
-                DeviceActivityReport(.insights, filter: insightsFilterForToday)
-                    .frame(minHeight: 300)
-                    .overlay { Color.white.opacity(0.001) }
+                PassthroughView(content:
+                    DeviceActivityReport(.insights, filter: insightsFilterForToday)
+                )
+                .frame(minHeight: 300)
             } else {
                 GlassCard(style: .subtle) {
                     HStack(spacing: 12) {
@@ -1805,10 +1806,11 @@ struct BrainAnalysisSheet: View {
                         .tracking(0.8)
                         .padding(.horizontal, 4)
 
-                    DeviceActivityReport(.insights, filter: brainFilterForToday)
-                        .id(brainReportRefreshID)
-                        .frame(minHeight: 400)
-                        .overlay { Color.white.opacity(0.001) }
+                    PassthroughView(content:
+                        DeviceActivityReport(.insights, filter: brainFilterForToday)
+                            .id(brainReportRefreshID)
+                    )
+                    .frame(minHeight: 400)
                 }
             }
         }
