@@ -1098,12 +1098,8 @@ struct BrainAnalysisSheet: View {
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 } else {
-                    Text("Brain Analysis")
+                    Text("Today's Insights")
                         .font(.title2.bold())
-                    Text("Your live screen time report is shown below.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -1763,50 +1759,22 @@ struct BrainAnalysisSheet: View {
     @State private var brainReportRefreshID = UUID()
 
     private var noDataSection: some View {
-        VStack(spacing: 16) {
-            GlassCard {
-                VStack(spacing: 12) {
-                    Image(systemName: "info.circle")
-                        .font(.title3)
-                        .foregroundStyle(.blue)
-                    Text("Data is syncing...")
-                        .font(.subheadline.bold())
-                    Text("Your screen time data is shown below from the system report. Detailed AI analysis will be available once data syncs to the app.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-
-                    Button {
-                        Task {
-                            ScreenTimeDataSyncService.shared.syncLatestDailyData(into: modelContext)
-                            displayReport = DisplayReport.loadFromSharedContainers()
-                            if let dr = effectiveReport {
-                                aiEngine.analysisState = .completed(generateLocalAnalysis(from: dr))
-                            }
-                            brainReportRefreshID = UUID()
-                        }
-                    } label: {
-                        Label("Try Syncing", systemImage: "arrow.clockwise")
-                            .font(.caption.weight(.medium))
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-                .frame(maxWidth: .infinity)
-            }
-
-            // Show live data from extension as fallback
+        VStack(spacing: 8) {
+            // Show live insights from extension directly
             if ScreenTimeService.shared.isAuthorized {
-                VStack(alignment: .leading, spacing: 8) {
-                    Label("Live Report", systemImage: "waveform")
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .textCase(.uppercase)
-                        .tracking(0.8)
-                        .padding(.horizontal, 4)
-
-                    DeviceActivityReport(.insights, filter: brainFilterForToday)
-                        .id(brainReportRefreshID)
-                        .frame(height: 800)
+                DeviceActivityReport(.insights, filter: brainFilterForToday)
+                    .id(brainReportRefreshID)
+                    .frame(height: 450)
+            } else {
+                GlassCard {
+                    VStack(spacing: 12) {
+                        Image(systemName: "lock.fill")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                        Text("Screen Time access needed")
+                            .font(.subheadline.bold())
+                    }
+                    .frame(maxWidth: .infinity)
                 }
             }
         }
