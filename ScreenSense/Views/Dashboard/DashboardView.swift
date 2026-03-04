@@ -219,7 +219,10 @@ struct DashboardView: View {
                 DeviceActivityReport(.totalActivity, filter: filterForToday)
                     .id(reportRefreshID)
                     .frame(minHeight: 700)
-                    .allowsHitTesting(false)
+                    .overlay {
+                        Color.clear
+                            .contentShape(Rectangle())
+                    }
             }
             .springAppear()
         }

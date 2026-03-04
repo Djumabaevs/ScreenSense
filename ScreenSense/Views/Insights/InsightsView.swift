@@ -117,7 +117,7 @@ struct InsightsView: View {
                 // Show live insights from extension when no local data
                 DeviceActivityReport(.insights, filter: insightsFilterForToday)
                     .frame(minHeight: 300)
-                    .allowsHitTesting(false)
+                    .overlay { Color.clear.contentShape(Rectangle()) }
             } else {
                 GlassCard(style: .subtle) {
                     HStack(spacing: 12) {
@@ -1006,7 +1006,9 @@ struct BrainAnalysisSheet: View {
                         wellnessTipsSection(dr)
                             .springAppear(delay: 0.42)
                     } else {
+                        // No SwiftData report — show live extension data
                         noDataSection
+                            .springAppear(delay: 0.06)
                     }
                 }
                 .padding()
@@ -1097,11 +1099,12 @@ struct BrainAnalysisSheet: View {
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 } else {
-                    Text("Deep Analysis")
+                    Text("Brain Analysis")
                         .font(.title2.bold())
-                    Text("Start using your device to see analysis.")
+                    Text("Your live screen time report is shown below.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -1805,7 +1808,7 @@ struct BrainAnalysisSheet: View {
                     DeviceActivityReport(.insights, filter: brainFilterForToday)
                         .id(brainReportRefreshID)
                         .frame(minHeight: 400)
-                        .allowsHitTesting(false)
+                        .overlay { Color.clear.contentShape(Rectangle()) }
                 }
             }
         }
