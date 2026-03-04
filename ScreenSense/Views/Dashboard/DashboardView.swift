@@ -44,14 +44,15 @@ struct DashboardView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
+            VStack(spacing: 0) {
+                if !screenTimeService.isAuthorized {
                     permissionCard
-                    screenTimeReportSection
-                    nativeDashboardCards
+                        .padding()
+                } else {
+                    // Extension handles all rendering + scrolling internally
+                    DeviceActivityReport(.totalActivity, filter: filterForToday)
+                        .id(reportRefreshID)
                 }
-                .padding()
-                .padding(.bottom, 32)
             }
             .navigationTitle(greeting)
             .toolbar {
@@ -170,61 +171,7 @@ struct DashboardView: View {
         }
     }
 
-    // MARK: - Screen Time Report Section (DeviceActivityReport)
-
-    @ViewBuilder
-    private var screenTimeReportSection: some View {
-        if screenTimeService.isAuthorized {
-            VStack(alignment: .leading, spacing: 12) {
-                // Section header with refresh button
-                HStack {
-                    Text("Today")
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .textCase(.uppercase)
-                        .tracking(0.8)
-
-                    Spacer()
-
-                    Button {
-                        reportRefreshID = UUID()
-                        Task {
-                            try? await Task.sleep(for: .seconds(2))
-                            refreshAnchor = Date()
-                            screenTimeService.syncLatestData(modelContext: modelContext)
-                            loadReportDiagnostics()
-                        }
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "arrow.clockwise")
-                                .font(.system(size: 11, weight: .semibold))
-                            Text("Refresh")
-                                .font(.system(size: 11, weight: .medium))
-                        }
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(.ultraThinMaterial, in: Capsule())
-                        .overlay(
-                            Capsule()
-                                .stroke(.white.opacity(0.10), lineWidth: 0.5)
-                        )
-                    }
-                }
-                .padding(.horizontal, 4)
-
-                // The DeviceActivityReport (renders TotalActivityView from the extension)
-                // This is essential: it triggers the extension to run and sync data.
-                // The overlay captures scroll gestures so the parent ScrollView works.
-                PassthroughView(content:
-                    DeviceActivityReport(.totalActivity, filter: filterForToday)
-                        .id(reportRefreshID)
-                )
-                .frame(minHeight: 700)
-            }
-            .springAppear()
-        }
-    }
+    // screenTimeReportSection removed — extension view is now the full tab content
 
     // MARK: - Native Tappable Dashboard Cards
 
@@ -337,10 +284,6 @@ struct DashboardView: View {
             // Top Apps Section
             nativeTopAppsSection(dr)
                 .springAppear(delay: 0.15)
-        } else if screenTimeService.isAuthorized {
-            // Extension view above already shows the data — just show sync status
-            // Data is visible through the DeviceActivityReport extension view
-            EmptyView()
         }
     }
 

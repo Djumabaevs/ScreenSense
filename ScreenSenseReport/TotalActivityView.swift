@@ -127,22 +127,36 @@ struct TotalActivityView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack(spacing: 16) {
-            // Hero score section
-            scoreHeroSection
+        ScrollView {
+            VStack(spacing: 16) {
+                // Section header
+                HStack {
+                    Text("Today")
+                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+                        .tracking(0.8)
+                    Spacer()
+                }
+                .padding(.horizontal, 4)
 
-            // Quick stats pills
-            statsRow
+                // Hero score section
+                scoreHeroSection
 
-            // Quality breakdown
-            qualitySection
+                // Quick stats pills
+                statsRow
 
-            // Top apps
-            if !summary.appUsages.isEmpty {
-                topAppsSection
+                // Quality breakdown
+                qualitySection
+
+                // Top apps
+                if !summary.appUsages.isEmpty {
+                    topAppsSection
+                }
             }
+            .padding(.horizontal, 2)
+            .padding(.bottom, 100) // Space for tab bar
         }
-        .padding(.horizontal, 2)
         .task {
             // Persist data from extension view context (backup to makeConfiguration saves)
             persistSummaryFromView()
@@ -662,19 +676,22 @@ struct InsightsReportView: View {
     }
 
     var body: some View {
-        VStack(spacing: 14) {
-            if insights.isEmpty {
-                emptyState
-            } else {
-                ForEach(insights) { insight in
-                    insightCard(insight)
+        ScrollView {
+            VStack(spacing: 14) {
+                if insights.isEmpty {
+                    emptyState
+                } else {
+                    ForEach(insights) { insight in
+                        insightCard(insight)
+                    }
                 }
-            }
 
-            // Quick tip
-            quickTipCard
+                // Quick tip
+                quickTipCard
+            }
+            .padding(.horizontal, 2)
+            .padding(.bottom, 100)
         }
-        .padding(.horizontal, 2)
     }
 
     private var emptyState: some View {
