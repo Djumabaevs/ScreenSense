@@ -120,6 +120,17 @@ private func processActivityData(_ data: DeviceActivityResults<DeviceActivityDat
     appGroup.save(summary, forKey: UserDefaultsKeys.sharedLatestDailyData)
     appGroup.save(summary.generatedAt, forKey: UserDefaultsKeys.sharedLatestDailyDataUpdatedAt)
 
+    // Backup: write JSON file to shared container
+    if let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.appGroupID) {
+        let fileURL = containerURL.appendingPathComponent("latest_daily.json")
+        if let encoded = try? JSONEncoder().encode(summary) {
+            try? encoded.write(to: fileURL, options: .atomic)
+        }
+    }
+
+    // Backup: write to Keychain (works even if App Group fails)
+    KeychainTransport.save(summary)
+
     return summary
 }
 

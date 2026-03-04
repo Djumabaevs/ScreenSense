@@ -887,9 +887,15 @@ struct DisplayReport {
     }
 
     static func loadFromSharedContainers() -> DisplayReport? {
+        // Allow data from today or up to 2 hours ago (grace period for midnight crossover)
+        let gracePeriod: TimeInterval = 2 * 3600
+        func isRecentEnough(_ date: Date) -> Bool {
+            Calendar.current.isDateInToday(date) || Date().timeIntervalSince(date) < gracePeriod
+        }
+
         // Source 1: AppGroup UserDefaults
         if let data: SharedDailyData = AppGroupManager.shared.load(forKey: UserDefaultsKeys.sharedLatestDailyData),
-           Calendar.current.isDateInToday(data.date) {
+           isRecentEnough(data.date) {
             return from(data)
         }
 
@@ -898,14 +904,14 @@ struct DisplayReport {
             let fileURL = containerURL.appendingPathComponent("latest_daily.json")
             if let fileData = try? Data(contentsOf: fileURL),
                let shared = try? JSONDecoder().decode(SharedDailyData.self, from: fileData),
-               Calendar.current.isDateInToday(shared.date) {
+               isRecentEnough(shared.date) {
                 return from(shared)
             }
         }
 
         // Source 3: Keychain
         if let kcData = KeychainTransport.load(),
-           Calendar.current.isDateInToday(kcData.date) {
+           isRecentEnough(kcData.date) {
             return from(kcData)
         }
 
@@ -1013,6 +1019,11 @@ struct BrainAnalysisSheet: View {
                 if let report = todayReport {
                     if aiEngine.isAvailable {
                         await aiEngine.analyze(report: report, moods: Array(moods.prefix(7)))
+                        // If AI returned unavailable (e.g. not enough data), fall back to local
+                        if case .unavailable = aiEngine.analysisState {
+                            let dr = DisplayReport.from(report)
+                            aiEngine.analysisState = .completed(generateLocalAnalysis(from: dr))
+                        }
                     } else {
                         // Generate a local data-driven analysis as fallback
                         let dr = DisplayReport.from(report)
@@ -1377,7 +1388,11 @@ struct BrainAnalysisSheet: View {
     @ViewBuilder
     private var aiAnalysisSection: some View {
         switch aiEngine.analysisState {
-        case .idle, .loading:
+        case .idle:
+            // Don't show loading spinner when idle — means no data was available to analyze
+            EmptyView()
+
+        case .loading:
             loadingSection
 
         case .completed(let analysis):
@@ -1734,10 +1749,24 @@ struct BrainAnalysisSheet: View {
                 Text("No Data Yet")
                     .font(.title3.bold())
 
-                Text("Use your device for a few minutes, then return to Home to sync your screen time data.")
+                Text("Use your device for a few minutes, then return to Home and tap Refresh to sync your screen time data.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+
+                Button {
+                    Task {
+                        ScreenTimeDataSyncService.shared.syncLatestDailyData(into: modelContext)
+                        displayReport = DisplayReport.loadFromSharedContainers()
+                        if let dr = effectiveReport {
+                            aiEngine.analysisState = .completed(generateLocalAnalysis(from: dr))
+                        }
+                    }
+                } label: {
+                    Label("Try Syncing Now", systemImage: "arrow.clockwise")
+                        .font(.subheadline.weight(.medium))
+                }
+                .buttonStyle(.borderedProminent)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 20)

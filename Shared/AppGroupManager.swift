@@ -65,6 +65,7 @@ enum KeychainTransport {
     private static let service = "com.screensense.shared-data"
     private static let account = "latestDailyData"
 
+    @discardableResult
     static func save(_ data: SharedDailyData) -> Bool {
         guard let encoded = try? JSONEncoder().encode(data) else {
             return false
@@ -89,9 +90,9 @@ enum KeychainTransport {
 
         var status = SecItemAdd(addQuery as CFDictionary, nil)
 
-        // If default access group fails, try with explicit team group
+        // If default access group fails, try with explicit app group keychain sharing
         if status != errSecSuccess {
-            addQuery[kSecAttrAccessGroup as String] = "R56999TGTG.*"
+            addQuery[kSecAttrAccessGroup as String] = AppConstants.appGroupID
             status = SecItemAdd(addQuery as CFDictionary, nil)
         }
 
@@ -99,6 +100,7 @@ enum KeychainTransport {
     }
 
     static func load() -> SharedDailyData? {
+        // Try default access group first
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -108,7 +110,14 @@ enum KeychainTransport {
         ]
 
         var result: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        var status = SecItemCopyMatching(query as CFDictionary, &result)
+
+        // Fallback: try with app group access group
+        if status != errSecSuccess {
+            var groupQuery = query
+            groupQuery[kSecAttrAccessGroup as String] = AppConstants.appGroupID
+            status = SecItemCopyMatching(groupQuery as CFDictionary, &result)
+        }
 
         guard status == errSecSuccess, let data = result as? Data else {
             return nil

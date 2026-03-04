@@ -218,10 +218,8 @@ struct DashboardView: View {
                 // The overlay captures scroll gestures so the parent ScrollView works.
                 DeviceActivityReport(.totalActivity, filter: filterForToday)
                     .id(reportRefreshID)
-                    .frame(minHeight: 800)
-                    .overlay {
-                        Color.white.opacity(0.001)
-                    }
+                    .frame(minHeight: 450)
+                    .allowsHitTesting(false)
             }
             .springAppear()
         }
