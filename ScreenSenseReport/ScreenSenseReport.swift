@@ -117,8 +117,9 @@ private func processActivityData(_ data: DeviceActivityResults<DeviceActivityDat
 
     // Attempt to save to app group (may fail due to ExtensionKit sandbox)
     let appGroup = AppGroupManager.shared
-    appGroup.save(summary, forKey: UserDefaultsKeys.sharedLatestDailyData)
+    let savedUD = appGroup.save(summary, forKey: UserDefaultsKeys.sharedLatestDailyData)
     appGroup.save(summary.generatedAt, forKey: UserDefaultsKeys.sharedLatestDailyDataUpdatedAt)
+    print("[ReportExt] AppGroup UserDefaults save: \(savedUD ? "✅" : "❌")")
 
     // Backup: write JSON file to shared container
     if let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.appGroupID) {
@@ -128,8 +129,10 @@ private func processActivityData(_ data: DeviceActivityResults<DeviceActivityDat
         }
     }
 
-    // Backup: write to Keychain (works even if App Group fails)
-    KeychainTransport.save(summary)
+    // Backup: write to Keychain (shared access group, works across app + extension)
+    let savedKC = KeychainTransport.save(summary)
+    print("[ReportExt] Keychain save: \(savedKC ? "✅" : "❌")")
+    print("[ReportExt] Summary: \(Int(summary.totalScreenTime))s, \(summary.appUsages.count) apps, \(summary.pickupCount) pickups")
 
     return summary
 }

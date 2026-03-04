@@ -65,64 +65,68 @@ enum KeychainTransport {
     private static let service = "com.screensense.shared-data"
     private static let account = "latestDailyData"
 
+    /// Shared team keychain access group — works across app + extensions without App Group
+    private static let teamAccessGroup = "R56999TGTG.com.screensense.shared-data"
+
     @discardableResult
     static func save(_ data: SharedDailyData) -> Bool {
         guard let encoded = try? JSONEncoder().encode(data) else {
             return false
         }
 
-        // Delete existing item first
-        let deleteQuery: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-        ]
-        SecItemDelete(deleteQuery as CFDictionary)
+        // Delete any existing items (both with and without access group)
+        for accessGroup in [teamAccessGroup, AppConstants.appGroupID, nil] as [String?] {
+            var deleteQuery: [String: Any] = [
+                kSecClass as String: kSecClassGenericPassword,
+                kSecAttrService as String: service,
+                kSecAttrAccount as String: account,
+            ]
+            if let group = accessGroup {
+                deleteQuery[kSecAttrAccessGroup as String] = group
+            }
+            SecItemDelete(deleteQuery as CFDictionary)
+        }
 
-        // Add new item
-        var addQuery: [String: Any] = [
+        // Save with team-prefixed access group (works across app + extension)
+        let addQuery: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
             kSecValueData as String: encoded,
             kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
+            kSecAttrAccessGroup as String: teamAccessGroup,
         ]
 
-        var status = SecItemAdd(addQuery as CFDictionary, nil)
-
-        // If default access group fails, try with explicit app group keychain sharing
-        if status != errSecSuccess {
-            addQuery[kSecAttrAccessGroup as String] = AppConstants.appGroupID
-            status = SecItemAdd(addQuery as CFDictionary, nil)
-        }
-
+        let status = SecItemAdd(addQuery as CFDictionary, nil)
+        print("[KeychainTransport] Save status: \(status) (0=success)")
         return status == errSecSuccess
     }
 
     static func load() -> SharedDailyData? {
-        // Try default access group first
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-            kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne,
-        ]
+        // Try team access group first (shared between app + extension)
+        for accessGroup in [teamAccessGroup, AppConstants.appGroupID, nil] as [String?] {
+            var query: [String: Any] = [
+                kSecClass as String: kSecClassGenericPassword,
+                kSecAttrService as String: service,
+                kSecAttrAccount as String: account,
+                kSecReturnData as String: true,
+                kSecMatchLimit as String: kSecMatchLimitOne,
+            ]
+            if let group = accessGroup {
+                query[kSecAttrAccessGroup as String] = group
+            }
 
-        var result: AnyObject?
-        var status = SecItemCopyMatching(query as CFDictionary, &result)
+            var result: AnyObject?
+            let status = SecItemCopyMatching(query as CFDictionary, &result)
 
-        // Fallback: try with app group access group
-        if status != errSecSuccess {
-            var groupQuery = query
-            groupQuery[kSecAttrAccessGroup as String] = AppConstants.appGroupID
-            status = SecItemCopyMatching(groupQuery as CFDictionary, &result)
+            if status == errSecSuccess, let data = result as? Data,
+               let decoded = try? JSONDecoder().decode(SharedDailyData.self, from: data) {
+                print("[KeychainTransport] Loaded from group: \(accessGroup ?? "default")")
+                return decoded
+            }
         }
 
-        guard status == errSecSuccess, let data = result as? Data else {
-            return nil
-        }
-
-        return try? JSONDecoder().decode(SharedDailyData.self, from: data)
+        print("[KeychainTransport] No data found in any access group")
+        return nil
     }
 }
