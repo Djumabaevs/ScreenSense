@@ -775,19 +775,22 @@ struct InsightsReportView: View {
     }
 
     var body: some View {
-        VStack(spacing: 14) {
-            if insights.isEmpty {
-                emptyState
-            } else {
-                ForEach(insights) { insight in
-                    insightCard(insight)
+        ScrollView {
+            VStack(spacing: 14) {
+                if insights.isEmpty {
+                    emptyState
+                } else {
+                    ForEach(insights) { insight in
+                        insightCard(insight)
+                    }
                 }
-            }
 
-            // Quick tip
-            quickTipCard
+                // Quick tip
+                quickTipCard
+            }
+            .padding(.horizontal, 2)
+            .padding(.bottom, 40)
         }
-        .padding(.horizontal, 2)
     }
 
     private var emptyState: some View {

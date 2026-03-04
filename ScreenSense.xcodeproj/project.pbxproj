@@ -28,11 +28,11 @@
 		36C65D4826DAE83F80FF1C55 /* View+Glass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E6D69A9B828C03FAF22B8C /* View+Glass.swift */; };
 		37A52FCD4B6CEB7DFC5B460D /* MoodEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88B3E69062933813980CE8 /* MoodEntry.swift */; };
 		38E52D2F585663E2A1520ABF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826487C4E4FF87DF1B20F73E /* ContentView.swift */; };
+		3A1B7C9E2F8D4A6B1E5C3D7A /* AIAnalysisEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F2D8A1C6B9E3F5A0D7B2C /* AIAnalysisEngine.swift */; };
 		3D6964D9B3A3205B0CBF59F5 /* AppGroupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C099472BF87EE9BFFDD7ADC7 /* AppGroupManager.swift */; };
 		41C47457FB60CD81042BF2CF /* Color+Glass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC111A1280C80B9B66614E5A /* Color+Glass.swift */; };
 		44744571A574E3375080ABC1 /* GoalTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 810DED1DF7BAA54FD3FC0973 /* GoalTracker.swift */; };
 		461F577A576A8F46AB3DC29C /* PermissionsSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AFE00209B58C462A132E8A /* PermissionsSetupView.swift */; };
-		3A1B7C9E2F8D4A6B1E5C3D7A /* AIAnalysisEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F2D8A1C6B9E3F5A0D7B2C /* AIAnalysisEngine.swift */; };
 		466F47A7E344E58DFDF3A7FA /* PatternEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC2D1AF5816BE19888E3EA0 /* PatternEngine.swift */; };
 		4D0E744C07176E92A0E83B0E /* ScoreRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D24AAF2EDEC403013D9544 /* ScoreRingView.swift */; };
 		4FB018B2A7577FA6AD3035BA /* ScreenSenseReport.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = A6FCD32EBEE541AFE9EFB675 /* ScreenSenseReport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -164,7 +164,6 @@
 		113955A01A9A2C8417255BE3 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		1942E1514CFCA69E57CB2A48 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		1A36C199386CC11058C60C6B /* InsightEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightEngine.swift; sourceTree = "<group>"; };
-		7E4F2D8A1C6B9E3F5A0D7B2C /* AIAnalysisEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAnalysisEngine.swift; sourceTree = "<group>"; };
 		1A894477D2308AC6BE46904B /* MoodAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodAnalyzer.swift; sourceTree = "<group>"; };
 		1E08341511F1A5FC1C3ADAD8 /* ScreenTimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeService.swift; sourceTree = "<group>"; };
 		211BDF011EBEF6C76F084967 /* GlassButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassButton.swift; sourceTree = "<group>"; };
@@ -187,7 +186,7 @@
 		5818F396DF8E12F98D4BFB1F /* ClassificationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationEngine.swift; sourceTree = "<group>"; };
 		5AAC5C2107A4B8B2D2B488CE /* Insight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insight.swift; sourceTree = "<group>"; };
 		63D43502D72C561942567B87 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
-		67D00803372898582064A6C1 /* ScreenSenseWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.extensionkit-extension"; path = ScreenSenseWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		67D00803372898582064A6C1 /* ScreenSenseWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreenSenseWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6971B63A81B9501EBAD5D7C1 /* InsightDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightDetailView.swift; sourceTree = "<group>"; };
 		6A446C15E6EA1EFEBA00D8FC /* CountingText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountingText.swift; sourceTree = "<group>"; };
 		6BC0DC7C0FE3CAFDC4F20693 /* PrivacyPromiseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPromiseView.swift; sourceTree = "<group>"; };
@@ -198,6 +197,7 @@
 		789BB2A4554A38B6040C1AD6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7AB5607977F05BA32EBD2151 /* MonthCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthCalendarView.swift; sourceTree = "<group>"; };
 		7CB1210B45655E222B76659F /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
+		7E4F2D8A1C6B9E3F5A0D7B2C /* AIAnalysisEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAnalysisEngine.swift; sourceTree = "<group>"; };
 		7EEA377017E0A1CCA6E655CB /* GlassSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassSegment.swift; sourceTree = "<group>"; };
 		7EFC96C95BD67FD927DE4B08 /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
 		7F27F952BB1F38DDC8D836AB /* SharedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedModels.swift; sourceTree = "<group>"; };
@@ -229,7 +229,7 @@
 		B44BD64057A5B432C83CB551 /* TimeInterval+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Format.swift"; sourceTree = "<group>"; };
 		B7600327D5C1D1EDDE566FFD /* ScreenSenseReport.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScreenSenseReport.entitlements; sourceTree = "<group>"; };
 		BBA14A22BDE89725E1847D8A /* TopAppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopAppsView.swift; sourceTree = "<group>"; };
-		BD05D559339C4C060548E45D /* ScreenSense.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ScreenSense.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD05D559339C4C060548E45D /* ScreenSense.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenSense.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE9CEEBC040A072264AA2029 /* InsightType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightType.swift; sourceTree = "<group>"; };
 		C099472BF87EE9BFFDD7ADC7 /* AppGroupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupManager.swift; sourceTree = "<group>"; };
 		C0CDBCF281C372163F3A64C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -244,7 +244,7 @@
 		E1043FE4B495AB5D1CE6F962 /* EmotionalImpact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionalImpact.swift; sourceTree = "<group>"; };
 		E307743976AB609A17C56719 /* ScoreEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreEngine.swift; sourceTree = "<group>"; };
 		E4D24AAF2EDEC403013D9544 /* ScoreRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreRingView.swift; sourceTree = "<group>"; };
-		F4AF7E954F9C8A678BFEF4D0 /* ScreenSenseMonitor.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.extensionkit-extension"; path = ScreenSenseMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4AF7E954F9C8A678BFEF4D0 /* ScreenSenseMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreenSenseMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5D4B3D5F02D4B654431D21B /* ProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarView.swift; sourceTree = "<group>"; };
 		FC111A1280C80B9B66614E5A /* Color+Glass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Glass.swift"; sourceTree = "<group>"; };
 		FC6882932195E5C940675073 /* AppUsageEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUsageEntry.swift; sourceTree = "<group>"; };
@@ -847,6 +847,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dzhumabaevs.screensense.app.report;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -926,7 +927,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -992,6 +993,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dzhumabaevs.screensense.app.report;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1022,6 +1024,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dzhumabaevs.screensense.app;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1050,6 +1053,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dzhumabaevs.screensense.app;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1133,7 +1137,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

@@ -116,7 +116,7 @@ struct InsightsView: View {
             } else if ScreenTimeService.shared.isAuthorized {
                 // Show live insights from extension when no local data
                 DeviceActivityReport(.insights, filter: insightsFilterForToday)
-                    .frame(height: 400)
+                    .frame(height: 900)
             } else {
                 GlassCard(style: .subtle) {
                     HStack(spacing: 12) {
@@ -1764,7 +1764,7 @@ struct BrainAnalysisSheet: View {
             if ScreenTimeService.shared.isAuthorized {
                 DeviceActivityReport(.insights, filter: brainFilterForToday)
                     .id(brainReportRefreshID)
-                    .frame(height: 450)
+                    .frame(height: 900)
             } else {
                 GlassCard {
                     VStack(spacing: 12) {

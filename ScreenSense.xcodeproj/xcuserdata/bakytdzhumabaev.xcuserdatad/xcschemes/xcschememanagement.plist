@@ -11,16 +11,22 @@
 		</dict>
 		<key>ScreenSenseMonitor.xcscheme_^#shared#^_</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
 		<key>ScreenSenseReport.xcscheme_^#shared#^_</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
 		<key>ScreenSenseWidget.xcscheme_^#shared#^_</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
@@ -28,6 +34,21 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>0A2797747C64BFB1FCEDE6BA</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>BD0152A33A8A677F940F6EEF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D8758F3D24EFCEA091AB6D88</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EC49D6ADC005593030D64799</key>
 		<dict>
 			<key>primary</key>
 			<true/>
