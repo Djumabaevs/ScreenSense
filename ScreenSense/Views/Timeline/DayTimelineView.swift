@@ -72,8 +72,7 @@ struct DayTimelineView: View {
                     DeviceActivityReport(.totalActivity, filter: filterForDate)
                         .frame(minHeight: 700)
                         .overlay {
-                            Color.clear
-                                .contentShape(Rectangle())
+                            Color.white.opacity(0.001)
                         }
                 }
             }

@@ -117,7 +117,7 @@ struct InsightsView: View {
                 // Show live insights from extension when no local data
                 DeviceActivityReport(.insights, filter: insightsFilterForToday)
                     .frame(minHeight: 300)
-                    .overlay { Color.clear.contentShape(Rectangle()) }
+                    .overlay { Color.white.opacity(0.001) }
             } else {
                 GlassCard(style: .subtle) {
                     HStack(spacing: 12) {
@@ -1808,7 +1808,7 @@ struct BrainAnalysisSheet: View {
                     DeviceActivityReport(.insights, filter: brainFilterForToday)
                         .id(brainReportRefreshID)
                         .frame(minHeight: 400)
-                        .overlay { Color.clear.contentShape(Rectangle()) }
+                        .overlay { Color.white.opacity(0.001) }
                 }
             }
         }

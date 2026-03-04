@@ -98,7 +98,7 @@ struct DashboardView: View {
                 screenTimeService.startMonitoringIfAuthorized()
                 await refreshPipeline()
             }
-            .onReceive(Timer.publish(every: 15, on: .main, in: .common).autoconnect()) { _ in
+            .onReceive(Timer.publish(every: 60, on: .main, in: .common).autoconnect()) { _ in
                 guard scenePhase == .active else { return }
                 Task { @MainActor in
                     refreshAnchor = Date()
@@ -220,8 +220,7 @@ struct DashboardView: View {
                     .id(reportRefreshID)
                     .frame(minHeight: 700)
                     .overlay {
-                        Color.clear
-                            .contentShape(Rectangle())
+                        Color.white.opacity(0.001)
                     }
             }
             .springAppear()
