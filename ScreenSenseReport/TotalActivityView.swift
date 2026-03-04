@@ -143,6 +143,36 @@ struct TotalActivityView: View {
             }
         }
         .padding(.horizontal, 2)
+        .task {
+            // Persist data from extension view context (backup to makeConfiguration saves)
+            persistSummaryFromView()
+        }
+    }
+
+    /// Write summary data from the view rendering context.
+    /// This runs in the extension process after the view appears.
+    private func persistSummaryFromView() {
+        guard let encoded = try? JSONEncoder().encode(summary) else { return }
+
+        // Method 1: UserDefaults via App Group
+        if let defaults = UserDefaults(suiteName: AppConstants.appGroupID) {
+            defaults.set(encoded, forKey: UserDefaultsKeys.sharedLatestDailyData)
+            defaults.set(Date(), forKey: UserDefaultsKeys.sharedLatestDailyDataUpdatedAt)
+            defaults.synchronize()
+        }
+
+        // Method 2: Direct file write with NSFileCoordinator (handles cross-process access)
+        if let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.appGroupID) {
+            let fileURL = containerURL.appendingPathComponent("latest_daily.json")
+            var coordError: NSError?
+            let coordinator = NSFileCoordinator()
+            coordinator.coordinate(writingItemAt: fileURL, options: .forReplacing, error: &coordError) { url in
+                try? encoded.write(to: url, options: .atomic)
+            }
+        }
+
+        // Method 3: Keychain
+        KeychainTransport.save(summary)
     }
 
     // MARK: - Score Hero

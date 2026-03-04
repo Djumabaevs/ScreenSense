@@ -337,7 +337,7 @@ struct DashboardView: View {
             nativeTopAppsSection(dr)
                 .springAppear(delay: 0.15)
         } else if screenTimeService.isAuthorized {
-            // No data yet
+            // No data yet — show diagnostics
             GlassCard(style: .subtle) {
                 VStack(spacing: 12) {
                     Image(systemName: "clock.fill")
@@ -349,6 +349,23 @@ struct DashboardView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
+
+                    Button {
+                        reportRefreshID = UUID()
+                        Task {
+                            try? await Task.sleep(for: .seconds(3))
+                            refreshAnchor = Date()
+                            screenTimeService.syncLatestData(modelContext: modelContext)
+                            loadReportDiagnostics()
+                        }
+                    } label: {
+                        Label("Force Refresh", systemImage: "arrow.clockwise")
+                            .font(.subheadline.weight(.medium))
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    // Diagnostic info (long-press to show)
+                    diagnosticView
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -475,6 +492,53 @@ struct DashboardView: View {
     }
 
     // MARK: - Helpers
+
+    @State private var showDiagnostics = false
+
+    private var diagnosticView: some View {
+        VStack(spacing: 4) {
+            Button {
+                showDiagnostics.toggle()
+            } label: {
+                Text(showDiagnostics ? "Hide Diagnostics" : "Show Diagnostics")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+
+            if showDiagnostics {
+                let appGroup = AppGroupManager.shared
+                let containerExists = appGroup.isSharedContainerAvailable
+                let containerPath = appGroup.sharedContainerPath ?? "nil"
+                let hasUserDefaults: Bool = {
+                    let data: SharedDailyData? = appGroup.load(forKey: UserDefaultsKeys.sharedLatestDailyData)
+                    return data != nil
+                }()
+                let hasFile: Bool = {
+                    guard let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.appGroupID) else { return false }
+                    return FileManager.default.fileExists(atPath: url.appendingPathComponent("latest_daily.json").path)
+                }()
+                let hasKeychain = KeychainTransport.load() != nil
+                let reportGenAt = lastReportGeneratedAt?.formatted(date: .omitted, time: .shortened) ?? "never"
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Container: \(containerExists ? "✅" : "❌")")
+                    Text("Path: \(containerPath)")
+                    Text("UserDefaults: \(hasUserDefaults ? "✅ has data" : "❌ empty")")
+                    Text("JSON file: \(hasFile ? "✅ exists" : "❌ missing")")
+                    Text("Keychain: \(hasKeychain ? "✅ has data" : "❌ empty")")
+                    Text("Report gen: \(reportGenAt)")
+                    Text("SwiftData reports: \(reports.count)")
+                    Text("Today report: \(todayReport != nil ? "✅" : "❌")")
+                    Text("Shared fallback: \(sharedFallbackData != nil ? "✅" : "❌")")
+                }
+                .font(.system(size: 10, design: .monospaced))
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(8)
+                .background(Color.gray.opacity(0.1), in: RoundedRectangle(cornerRadius: 8))
+            }
+        }
+    }
 
     private var filterForToday: DeviceActivityFilter {
         let now = Date()
