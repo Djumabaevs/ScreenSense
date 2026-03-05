@@ -475,6 +475,7 @@ struct DashboardView: View {
 extension DeviceActivityReport.Context {
     static let totalActivity = Self("totalActivity")
     static let insights = Self("insights")
+    static let goalProgress = Self("goalProgress")
 }
 
 // MARK: - Score Detail Sheet

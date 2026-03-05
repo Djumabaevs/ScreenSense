@@ -41,6 +41,11 @@ final class AppGroupManager {
             return nil
         }
 
+        // Force refresh from disk — critical for cross-process reads
+        // (extension writes, main app reads). Without this, the in-memory
+        // cache may be stale and never see the extension's data.
+        defaults.synchronize()
+
         guard let data = defaults.data(forKey: key) else {
             return nil
         }
